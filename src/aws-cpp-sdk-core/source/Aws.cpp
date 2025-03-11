@@ -31,6 +31,8 @@ namespace Aws
 
     void InitAPI(const SDKOptions &options)
     {
+        printf("Testing\n");
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI");
         std::unique_lock<std::mutex> lock(s_initShutdownMutex);
         s_initCount += 1;
         if(s_initCount != 1)
@@ -50,10 +52,12 @@ namespace Aws
             Aws::Utils::Memory::InitializeAWSMemorySystem(Utils::Memory::GetDefaultMemorySystem());
         }
 #endif // USE_AWS_MEMORY_MANAGEMENT
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI1");
         Aws::Client::CoreErrorsMapper::InitCoreErrorsMapper();
         if(options.loggingOptions.logLevel != Aws::Utils::Logging::LogLevel::Off)
         {
-            if(options.loggingOptions.logger_create_fn)
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI11");
+            if (options.loggingOptions.logger_create_fn)
             {
                 Aws::Utils::Logging::InitializeAWSLogging(options.loggingOptions.logger_create_fn());
             }
@@ -73,36 +77,50 @@ namespace Aws
             }
             // For users to better debugging in case multiple versions of SDK installed
             AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "Initiate AWS SDK for C++ with Version:" << Aws::String(Aws::Version::GetVersionString()));
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI111");
         }
 
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI2");
         Aws::InitializeCrt();
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI22");
         Aws::Config::InitConfigAndCredentialsCacheManager();
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI3");
 
         if (options.ioOptions.clientBootstrap_create_fn)
         {
-            Aws::SetDefaultClientBootstrap(options.ioOptions.clientBootstrap_create_fn());
+          AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI33");
+          Aws::SetDefaultClientBootstrap(options.ioOptions.clientBootstrap_create_fn());
+          AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI333");
         }
         else
         {
-            Aws::Crt::Io::EventLoopGroup eventLoopGroup;
+          AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI34");
+          Aws::Crt::Io::EventLoopGroup eventLoopGroup;
             Aws::Crt::Io::DefaultHostResolver defaultHostResolver(eventLoopGroup, 8, 30);
             auto clientBootstrap = Aws::MakeShared<Aws::Crt::Io::ClientBootstrap>(ALLOCATION_TAG, eventLoopGroup, defaultHostResolver);
             clientBootstrap->EnableBlockingShutdown();
             Aws::SetDefaultClientBootstrap(clientBootstrap);
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI35");
         }
 
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI4");
         if (options.ioOptions.tlsConnectionOptions_create_fn)
         {
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI44");
             Aws::SetDefaultTlsConnectionOptions(options.ioOptions.tlsConnectionOptions_create_fn());
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI444");
         }
         else
         {
-            Aws::Crt::Io::TlsContextOptions tlsCtxOptions = Aws::Crt::Io::TlsContextOptions::InitDefaultClient();
+          AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI45");
+          Aws::Crt::Io::TlsContextOptions tlsCtxOptions = Aws::Crt::Io::TlsContextOptions::InitDefaultClient();
             Aws::Crt::Io::TlsContext tlsContext(tlsCtxOptions, Aws::Crt::Io::TlsMode::CLIENT);
             auto tlsConnectionOptions = Aws::MakeShared<Aws::Crt::Io::TlsConnectionOptions>(ALLOCATION_TAG, tlsContext.NewConnectionOptions());
             Aws::SetDefaultTlsConnectionOptions(tlsConnectionOptions);
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI445");
         }
 
+            AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI5");
         if (options.cryptoOptions.aes_CBCFactory_create_fn)
         {
             Aws::Utils::Crypto::SetAES_CBCFactory(options.cryptoOptions.aes_CBCFactory_create_fn());
@@ -155,6 +173,7 @@ namespace Aws
         {
             Aws::Http::SetHttpClientFactory(options.httpOptions.httpClientFactory_create_fn());
         }
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI6");
 
         Aws::Http::SetInitCleanupCurlFlag(options.httpOptions.initAndCleanupCurl);
         Aws::Http::SetInstallSigPipeHandlerFlag(options.httpOptions.installSigPipeHandler);
@@ -170,6 +189,7 @@ namespace Aws
         Aws::Internal::InitEC2MetadataClient();
         Aws::Monitoring::InitMonitoring(options.monitoringOptions.customizedMonitoringFactory_create_fn);
         Aws::Utils::ComponentRegistry::InitComponentRegistry();
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI7");
 
         if(options.sdkVersion.major != AWS_SDK_VERSION_MAJOR ||
             options.sdkVersion.minor != AWS_SDK_VERSION_MINOR ||
@@ -185,6 +205,7 @@ namespace Aws
               << "ABI is not guaranteed, please don't mix different versions of built libraries "
               << "and different versions of headers and corresponding built libraries.");
         }
+        AWS_LOGSTREAM_INFO(ALLOCATION_TAG, "InitAPI8");
     }
 
     void ShutdownAPI(const SDKOptions& options)

@@ -2,7 +2,7 @@
 if(PLATFORM_ANDROID AND ANDROID_BUILD_ZLIB)
     set(BUILD_ZLIB 1)
     message(STATUS "  Building Zlib as part of AWS SDK")
-elseif(NOT PLATFORM_WINDOWS AND NOT PLATFORM_CUSTOM)
+elseif(NOT PLATFORM_WINDOWS AND NOT PLATFORM_CUSTOM AND NOT PLATFORM_EMSCRIPTEN)
     #If zlib is required either by openssl and curl in their linking chain, we should find it.
     include(FindZLIB)
     if(NOT ZLIB_FOUND)
@@ -21,8 +21,8 @@ endif()
 # Encryption control
 # TODO: BYO Crypto is not implemented for CRT/Was not working in the latest version of the SDK.
 if(NO_ENCRYPTION)
-    message(FATAL_ERROR "BYO_CRYPTO is not currently implemented and has been broken since version 1.9")
-    set(ENABLE_INJECTED_ENCRYPTION ON)
+    #message(FATAL_ERROR "BYO_CRYPTO is not currently implemented and has been broken since version 1.9")
+    #set(ENABLE_INJECTED_ENCRYPTION ON)
     message(STATUS "Encryption: None")
     message(STATUS "You will need to inject an encryption implementation before making any http requests!")
 elseif (PLATFORM_ANDROID AND ANDROID_BUILD_OPENSSL)
@@ -43,7 +43,7 @@ if(NOT NO_HTTP_CLIENT AND NOT USE_CRT_HTTP_CLIENT)
         else()
             set(ENABLE_WINDOWS_CLIENT 1)
         endif()
-    elseif(PLATFORM_LINUX OR PLATFORM_APPLE OR PLATFORM_ANDROID)
+    elseif(PLATFORM_LINUX OR PLATFORM_APPLE OR PLATFORM_ANDROID OR PLATFORM_EMSCRIPTEN)
         set(ENABLE_CURL_CLIENT 1)
     endif()
 
