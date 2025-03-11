@@ -17,6 +17,12 @@ macro(apply_post_project_platform_settings)
     
     # Add Emscripten-specific definitions
     add_definitions(-DPLATFORM_EMSCRIPTEN)
+
+    # Suppress warnings about deprecated literal operator
+    add_compile_options(-Wno-deprecated-literal-operator) 
+
+    # Suppress warnings about redefined macros
+    add_compile_options(-Wno-macro-redefined)
     
     # Set appropriate threading model if threads are enabled
     if(ENABLE_THREADS)
