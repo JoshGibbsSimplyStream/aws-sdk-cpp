@@ -18,6 +18,14 @@ macro(apply_post_project_platform_settings)
     # Add Emscripten-specific definitions
     add_definitions(-DPLATFORM_EMSCRIPTEN)
 
+
+    # Set memory settings for Emscripten builds
+    add_link_options(-sMEMORY64=2)
+    add_compile_options(-sMEMORY64=2)
+    add_compile_options(-mbulk-memory)
+
+    add_link_options(-sUSE_PTHREADS=1)
+
     # Suppress warnings about deprecated literal operator
     add_compile_options(-Wno-deprecated-literal-operator) 
 

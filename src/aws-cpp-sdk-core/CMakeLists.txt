@@ -198,6 +198,8 @@ endif()
 
 if (PLATFORM_WINDOWS)
     file(GLOB NET_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/source/net/windows/*.cpp")
+elseif (PLATFORM_EMSCRIPTEN)
+    file(GLOB NET_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/source/net/emscripten/*.cpp")
 elseif(PLATFORM_LINUX OR PLATFORM_APPLE OR PLATFORM_ANDROID)
     file(GLOB NET_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/source/net/linux-shared/*.cpp")
 else()
@@ -313,6 +315,14 @@ if(PLATFORM_WINDOWS)
   file(GLOB AWS_NATIVE_SDK_WINDOWS_SRC
     ${PLATFORM_WINDOWS_SOURCE}
   )
+elseif(PLATFORM_EMSCRIPTEN)
+
+  #add your emscripten specific impl stuff here.
+  file(GLOB PLATFORM_EMSCRIPTEN_SOURCE = "${CMAKE_CURRENT_SOURCE_DIR}/source/platform/emscripten/*.cpp")
+
+  file(GLOB AWS_NATIVE_SDK_EMSCRIPTEN_SRC
+    ${PLATFORM_EMSCRIPTEN_SOURCE}
+  )
 elseif(PLATFORM_LINUX OR PLATFORM_APPLE)
 
   #add unix specific impl stuff here.
@@ -360,6 +370,7 @@ file(GLOB AWS_NATIVE_SDK_NON_UNITY_SRC
 
 file(GLOB AWS_NATIVE_SDK_UNITY_SRC
   ${AWS_NATIVE_SDK_COMMON_SRC}
+  ${AWS_NATIVE_SDK_EMSCRIPTEN_SRC}
   ${AWS_NATIVE_SDK_LINUX_SHARED_SRC}
   ${AWS_NATIVE_SDK_ANDROID_SRC}
 )
